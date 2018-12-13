@@ -21,7 +21,7 @@ config_dir = os.path.expanduser('~')
 config_files = {
     'nproc':'20-nproc.conf'
 }
-TMP = '/tmp/kv930b/'
+TMP = '/tmp/kannan/'
 logging.debug('Is temp directory exists? {}'.format(os.path.exists(TMP)))
 
 

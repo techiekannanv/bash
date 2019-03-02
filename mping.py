@@ -7,18 +7,13 @@ import argparse
 import multiprocessing as mp
 import time
 import logging
-from prettytable import PrettyTable
 
 
-output = mp.Queue()
-limits = 5
+limits = 10
 
 def worker(ip,count, timeout):
     resolve = list(lookup.Lookup(ip))
     print("{}:{}:{}".format(resolve[0],resolve[1], pingip.Ping(resolve[0], count, timeout)))
-    #print(' : '.join(resolve) +' : '+ pingip.Ping(resolve[0], count, timeout))
-#    resolve.append(pingip.Ping(resolve[0], count, timeout))
-#    output.put(resolve)
 
 parse = argparse.ArgumentParser(description='This script is used to ping multiple ips in parallel')
 parse.add_argument('-f', action='store', dest='file', default=None)
@@ -49,17 +44,3 @@ while ( ips ):
 for proc in procs:
     if proc.is_alive():
         proc.join()
-#final = []
-#while not output.empty():
-#    final.append(output.get())
-#
-#if args.format == 'line':
-#    for entry in final:
-#        print(' : '.join(entry))
-#elif args.format == 'table':
-#    table = PrettyTable()
-#    table.field_names = ['IP Address', 'HostName', 'Status']
-#    for entry in final:
-#        table.add_row(entry)
-#    table.sortby='Status'
-#    print(table)

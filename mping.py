@@ -15,7 +15,7 @@ limits = 5
 
 def worker(ip,count, timeout):
     resolve = list(lookup.Lookup(ip))
-    resolve.append(pingip.Ping(resolve[0]))
+    resolve.append(pingip.Ping(resolve[0], count, timeout))
     output.put(resolve)
 
 parse = argparse.ArgumentParser(description='This script is used to ping multiple ips in parallel')

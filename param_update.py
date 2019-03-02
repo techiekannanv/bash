@@ -4,7 +4,12 @@ To update the file it will take backup copy, search for the param_name in the
 file. If the param_name found with different value then update the value. If
 the param_name having same name then don't update. If the param_name not at
 all found in the config then add new entry. Whenever the script updating the
-config will it will add the ticket/change number before the param_name line.'''
+config will it will add the ticket/change number before the param_name line.
+
+Important Notes: This script only work for parameter and values which is
+having alpha, numeric, period(.), underscore(_) and hyphen(-). If the params
+or values contain other than this character then the script may now work'''
+
 
 from __future__ import print_function
 from datetime import date
@@ -45,7 +50,7 @@ params = {}
 with open(infile) as indata:
     for line in indata:
         if len(line):
-            match = re.findall('[\w.]+', line)
+            match = re.findall('[\w.-]+', line)
             if match:
                 params[match[0]] = match[1:]
                 # print(match)
@@ -60,7 +65,7 @@ with open(outfile, 'w') as outdata:
             #Check the line is blank or commented
             if re.match(r'\s*\w+', line):
                 #Only get param and values
-                match = re.findall('[\w.]+', line)
+                match = re.findall('[\w.-]+', line)
                 #Check the current parameter on dict params
                 if match[0] in params:
                     #If param name matched and check values are matching or not
@@ -69,11 +74,14 @@ with open(outfile, 'w') as outdata:
                     else:
                         print("DEBUG: Param {} found and values differ from config and new".format(match[0]))
                         match[1:] = params[match[0]]
+                        #change the line to updated param = values
+                        line = match[0] +' = '+ ' '.join(match[1:])
+                        line += "\t\t#Updated by param_update.py script"
                         update_kernel(match[0]+'='+' '.join(match[1:]))
                     #remove the processed param from dict params
                     del(params[match[0]])
                 #change the line to updated param = values
-                line = match[0] +' = '+ ' '.join(match[1:])
+                #line = match[0] +' = '+ ' '.join(match[1:])
             #Save the commented, blank and processed line in output file
             outdata.write(line +'\n')
             prev_line = line
@@ -82,12 +90,12 @@ with open(outfile, 'w') as outdata:
         print("DEBGU: New params adding in end of the file")
 
         for key, value in params.items():
-            outdata.write(key +' = '+ ' '.join(value) +'\n')
+            comment = "\t\t#Added by param_update.py script"
+            outdata.write(key +' = '+ ' '.join(value) +comment+'\n')
             update_kernel(key+'='+' '.join(value))
 
 try:
     copymode(config, outfile)
     copy2(outfile, config)
 except:
-    print("ERROR: Unable to copy the updated file to config file")
-
+        print("ERROR: Unable to copy the updated file to config file")

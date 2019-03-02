@@ -15,7 +15,8 @@ limits = 5
 
 def worker(ip,count, timeout):
     resolve = list(lookup.Lookup(ip))
-    print(' : '.join(resolve) +' : '+ pingip.Ping(resolve[0], count, timeout))
+    print("{}:{}:{}".format(resolve[0],resolve[1], pingip.Ping(resolve[0], count, timeout)))
+    #print(' : '.join(resolve) +' : '+ pingip.Ping(resolve[0], count, timeout))
 #    resolve.append(pingip.Ping(resolve[0], count, timeout))
 #    output.put(resolve)
 
